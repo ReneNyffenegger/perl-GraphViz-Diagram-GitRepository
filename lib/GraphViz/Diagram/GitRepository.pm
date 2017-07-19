@@ -36,9 +36,12 @@ our @ISA = qw(GraphViz::Graph);
 #_{ use …
 use Carp;
 use lib '/home/rene/github/lib/perl-GraphViz-Graph/lib/'; # Temporary...
+use lib '/home/rene/github/lib/perl-GraphViz-Diagram-ClassDiagram/lib/'; # Temporary...
 use GraphViz::Diagram::ClassDiagram::Class;
 use GraphViz::Diagram::ClassDiagram::GlobalVar;
 use GraphViz::Graph;
+use lib '/home/rene/github/lib/perl-Git-Repository-Internal/lib/'; # Temporary...
+use Git::Repository::Internal;
 #_}
 #_{ Methods
 #_{ POD
@@ -50,7 +53,7 @@ sub new { #_{
 
 =head2 new
 
-    my $class_diagram = GraphViz::Diagram::GitRepository->new('/path/to/github/repository', 'File.pdf');
+    my $git_repo_diagram = GraphViz::Diagram::GitRepository->new('/path/to/github/repository', 'File.pdf');
 
 Start drawing a git repository diagram.
 
@@ -61,17 +64,35 @@ Start drawing a git repository diagram.
   my $output_file      = shift;
   my $opts             = shift // {};
 
-  carp "$github_repo_path/.git does not exist or is not a directory" unless -d "$github_repo_path/.git";
+  my $dot_git_dir = "$github_repo_path/.git";
+  carp "$dot_git_dir does not exist or is not a directory" unless -d $dot_git_dir;
 
   # TODO: same functionality already used in GraphViz::Diagram::ClassDiagram
   my ($file_base_name, $suffix) = $output_file =~ m!(.*)\.([^.]+)$!;
 
   my $self           = GraphViz::Graph->new($file_base_name);
   $self -> {suffix } = $suffix;
-  $self -> {nodes_ } = [];
-  $self -> {links  } = [];
+# $self -> {nodes_ } = [];
+# $self -> {links  } = [];
+
+
+  my $git_repository_internal = Git::Repository::Internal->new($dot_git_dir) or carp "GraphViz::Diagram::GitRepository - new: Could not initialize Git::Repository::Internal with $dot_git_dir";
 
   bless $self, $class;
+
+  my @objects = $git_repository_internal->objects;
+  for my $obj (@objects) {
+    my $node_obj = $self->node();
+    my $text = $obj->{text};
+    $text =~ s/&/&amp;/g;
+    $text =~ s/</&lt;/g;
+    $text =~ s/>/&gt;/g;
+    $text =~ s/\n/<br\/>/mg;
+    $node_obj -> label({html=> "<table><tr><td>$obj->{object_id}</td></tr><tr><td>$obj->{type}</td></tr><tr><td>$text</td></tr></table>" });
+
+  }
+
+
   return $self;
 
 } #_}
@@ -79,7 +100,7 @@ sub title { #_{
 
 =head2 title
 
-    $class_diagram -> title("Foo classes");
+    $git_repo_diagram -> title("Foo classes");
 
 Start drawing a git repository diagram.
 
@@ -97,19 +118,12 @@ Start drawing a git repository diagram.
 sub create { #_{
 #_{
 =head2 create
-    $class_diagram -> create();
+    $git_repo_diagram -> create();
 
-Writes the git repository diagram:
-
-=over
-
-=item * L<renders|GraphViz::Diagram::ClassDiagram::Class/render> L<classes|GraphViz::Diagram::ClassDiagram::Class>
-
-=item * Draw L<edges|GraphViz::Graph::Edge> between classes
-
-back
+Writes the git repository diagram.
 
 =cut
+
 #_}
   my $self    = shift;
 
@@ -149,8 +163,11 @@ Compare with L<GraphViz::Diagram::ClassDiagram::Attribute/ident_color>
 #_}
 #_{ Source Code
 
+=head1 Source code
+
 The source code is on L<github|https://github.com/ReneNyffenegger/perl-GraphViz-Diagram-GitRepository>.
 
+=cut
 #_}
 
 'tq84';
