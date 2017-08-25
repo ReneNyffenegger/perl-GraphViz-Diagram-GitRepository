@@ -8,7 +8,7 @@ WriteMakefile(
     NAME             => 'GraphViz::Diagram::GitRepository',
     AUTHOR           => q{René Nyffenegger <rene.nyffenegger@adp-gmbh.ch>},
     VERSION_FROM     => 'lib/GraphViz/Diagram/GitRepository.pm',
-    ABSTRACT_FROM    => 'lib/GraphViz/Diagram/GitRepository.pm',
+#   ABSTRACT_FROM    => 'lib/GraphViz/Diagram/GitRepository.pm',  # TODO
     LICENSE          => 'artistic_2',
     PL_FILES         => {},
     MIN_PERL_VERSION => 5.006,
