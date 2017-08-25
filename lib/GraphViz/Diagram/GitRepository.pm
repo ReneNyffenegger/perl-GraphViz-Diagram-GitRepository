@@ -161,11 +161,24 @@ Compare with L<GraphViz::Diagram::ClassDiagram::Attribute/ident_color>
 } #_}
 
 #_}
+#_{ Copyright
+
+=head1 Copyright
+
+Copyright © 2017 René Nyffenegger, Switzerland. All rights reserved.
+ 
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at: L<http://www.perlfoundation.org/artistic_license_2_0>
+ 
+
+=cut
+#_}
 #_{ Source Code
 
 =head1 Source code
 
-The source code is on L<github|https://github.com/ReneNyffenegger/perl-GraphViz-Diagram-GitRepository>.
+The source code is on L<github|https://github.com/ReneNyffenegger/perl-GraphViz-Diagram-GitRepository>. Meaningful pull requests are welcome.
 
 =cut
 #_}
